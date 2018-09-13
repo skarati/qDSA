@@ -1,0 +1,9 @@
+Total CPU cycles for KeyGen Min: 94270.00.
+Total CPU cycles for KeyGen Median: 100886.00.
+Total CPU cycles for KeyGen Max: 388072.00.
+Total CPU cycles for Sign Min: 123942.00.
+Total CPU cycles for Sign Median: 124940.00.
+Total CPU cycles for Sign Max: 163298.00.
+Total CPU cycles for Verify Min: 199662.00.
+Total CPU cycles for Verify Median: 200212.00.
+Total CPU cycles for Verify Max: 383754.00.
