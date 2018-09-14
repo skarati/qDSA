@@ -16,5 +16,4 @@ the compilation flags used for the code.
 
 Implementor:
 ------------
-Sabyasachi Karati
-Palash Sarkar
+Sabyasachi Karati and Palash Sarkar
