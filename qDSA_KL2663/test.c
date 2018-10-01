@@ -1,10 +1,11 @@
-//#include "shake256/keccak-tiny-unrolled.c"
-
 #include "qDSA.h"
 #include "measurement.h"
+#include "time.h"
+
 int main(){
-	int i;
-	u8 d1[33],d2[32];
+	int i, v=0;
+	u8 d1[33];
+        u8 d2[32];
 	unsigned char pk[34];
 	u8 msg[32];
 	u8 R[34];
@@ -12,6 +13,8 @@ int main(){
 
 	setup(&basenp);
 	
+	srand(time(NULL));
+	for(int j=0;j<100;j++){
 	//MEASURE({
 		keyGen(d1, d2, pk);
 	//});
@@ -29,13 +32,15 @@ int main(){
 
 
 	//MEASURE({
-		printf("\nverify=%d\n",verify(R, s, pk, msg));
+		//verify(R, s, pk, msg);
 	//});
+		v += verify(R, s, pk, msg);
+		printf("\nverify = %d\n",v);
+		//printf("\nverify = %d\n",verify(R, s, pk, msg));
 	//printf("Total CPU cycles for Verify Min: %.2f.\n", RDTSC_clk_min);
 	//printf("Total CPU cycles for Verify Median: %.2f.\n", RDTSC_clk_median);
 	//printf("Total CPU cycles for Verify Max: %.2f.\n", RDTSC_clk_max);
-
-
+	}
 	return 0;
 }
 

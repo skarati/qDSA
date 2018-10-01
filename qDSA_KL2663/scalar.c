@@ -42,7 +42,7 @@ static void reduce_add_sub(u16 r[33])
 }
 
 /* Reduce coefficients of x before calling barrett_reduce */
-static void barrett_reduce(u16 r[32], const u32 x[64])
+static void barrett_reduce(u16 r[33], const u32 x[66])
 {
   /* See HAC, Alg. 14.42 */
   int i,j;
@@ -91,6 +91,7 @@ static void barrett_reduce(u16 r[32], const u32 x[64])
 
   reduce_add_sub(r);
   reduce_add_sub(r);
+  //r[33] = 0;
 }
 
 int  group_scalar_get32(u16 r[33], const unsigned char x[33])
@@ -109,14 +110,7 @@ int  group_scalar_get64(u16 r[33], const unsigned char x[66])
     barrett_reduce(r, t);
   return 0;
 }
-/*
-void group_scalar_pack(unsigned char r[GROUP_SCALAR_PACKEDBYTES], const group_scalar *x)
-{
-  int i;
-  for(i=0;i<32;i++)
-    r[i] = x->v[i];
-}
-*/
+
 static void group_scalar_add(u16 r[33], const u16 x[33], const u16 y[33])
 {
   int i, carry;
@@ -133,17 +127,18 @@ static void group_scalar_add(u16 r[33], const u16 x[33], const u16 y[33])
 void group_scalar_sub(u16 r[33], const u16 x[33], const u16 y[33])
 {
   u32 b = 0;
-  u32 t;
+  u32 t=0;
   int i;
   u16 d[33];
 
   for(i=0;i<33;i++)
   {
-    t = m[i] - y[i] - b;
-    d[i] = t & 255;
-    b = (t >> 8) & 1;
-  }
-  group_scalar_add(r,x,d);
+    t += y[i];
+    b = lt(x[i],t);
+    r[i] = x[i]-t+(b<<8);
+    t = b;
+   }
+
 }
 
 void group_scalar_mul(u16 r[33], const u16 x[33], const u16 y[33])

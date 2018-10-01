@@ -17,8 +17,8 @@ inline void mulconst_gfe4(gfe4x *r64, gfe4x *a, const vec *b);
 inline void mulconst_gfe4Unreduced(gfe4x *r64, gfe4x *a, const vec *b);
 inline void scalar_mult_fixed_base_compress_freeze(unsigned char op[34], gfe4x base, unsigned char n[33]);
 inline void scalar_mult_fixed_base_decompress(gfe54 *x54, gfe54 *z54, gfe4x base, unsigned char n[33]);
-inline void scalar_mult_var_base_compress_freeze(unsigned char op[34], unsigned char base_rand[64], unsigned char n[33]);
-inline void scalar_mult_var_base_decompress(gfe54 *x54, gfe54 *z54, unsigned char base_rand[64], unsigned char n[33]);
+inline void scalar_mult_var_base_compress_freeze(unsigned char op[34], unsigned char base_rand[68], unsigned char n[33]);
+inline void scalar_mult_var_base_decompress(gfe54 *x54, gfe54 *z54, unsigned char base_rand[68], unsigned char n[33]);
 
 inline void scalar_mult_fixed_base_compress_freeze(unsigned char op[34], gfe4x base, unsigned char n[33]){
 	int bit, i, j, k;
@@ -29,15 +29,17 @@ inline void scalar_mult_fixed_base_compress_freeze(unsigned char op[34], gfe4x b
 	np = base;
 	gfe4_t_gfe(&np, re);
 	bit = 0;
-	i = 32;
-	j = 6;	
+	i =32;
+	j=7;
 	while(bit == 0){
 		bit = (n[i]>>j) & 1;
 		j--;
-		if(j==-1){i--;j=7;}
+		if(j==-1) {i--; j=7;}
 	}
+	//k = 1;
+	
   	for(;i>=0;i--){
-    		for(;j>=0;j--){
+       		for(;j>=0;j--){
 			bit = (n[i]>>j) & 1;
 			gfe4x_hadamard(&np, &np);
 			gfe4x_permute(&npt,&np,bit);
@@ -52,8 +54,6 @@ inline void scalar_mult_fixed_base_compress_freeze(unsigned char op[34], gfe4x b
 	}
 	VECREDUCEPARTB2663((&np)->v[0],(&np)->v[1],(&np)->v[2],(&np)->v[3],(&np)->v[4],(&np)->v[5],(&np)->v[6],(&np)->v[7],(&np)->v[8],(&np)->v[9]);
 	gfe4_t_gfe(&np, re);
-//	x = re[0];	pack54(&x,&x54);
-//	z = re[1];	pack54(&z,&z54);
 	pack54(&re[0],&x54);
 	pack54(&re[1],&z54);
 	invert(&temp,&z54);
@@ -62,7 +62,7 @@ inline void scalar_mult_fixed_base_compress_freeze(unsigned char op[34], gfe4x b
 	makeUnique(&temp,&temp);
 	convert_i54toc(&temp,op);
 
-	return;
+	return ;
 
 }
 
@@ -74,16 +74,19 @@ inline void scalar_mult_fixed_base_decompress(gfe54 *x54, gfe54 *z54, gfe4x base
 	
 	np = base;
 	gfe4_t_gfe(&np, re);
+
 	bit = 0;
-	i = 32;
-	j = 6;	
+	i =32;
+	j=7;
 	while(bit == 0){
 		bit = (n[i]>>j) & 1;
 		j--;
-		if(j==-1){i--;j=7;}
+		if(j==-1) {i--; j=7;}
 	}
+	//k = 1;
+	
   	for(;i>=0;i--){
-    		for(;j>=0;j--){
+       		for(;j>=0;j--){
 			bit = (n[i]>>j) & 1;
 			gfe4x_hadamard(&np, &np);
 			gfe4x_permute(&npt,&np,bit);
@@ -98,18 +101,16 @@ inline void scalar_mult_fixed_base_decompress(gfe54 *x54, gfe54 *z54, gfe4x base
 	}
 	VECREDUCEPARTB2663((&np)->v[0],(&np)->v[1],(&np)->v[2],(&np)->v[3],(&np)->v[4],(&np)->v[5],(&np)->v[6],(&np)->v[7],(&np)->v[8],(&np)->v[9]);
 	gfe4_t_gfe(&np, re);
-//	x = re[0];	pack54(&x,x54);
-//	z = re[1];	pack54(&z,z54);
 	pack54(&re[0],x54);
 	pack54(&re[1],z54);
+	
+	return ;
 
-	return;
 }
 
 
 
-
-inline void scalar_mult_var_base_compress_freeze(unsigned char op[34], unsigned char base_rand[64], unsigned char n[33]){
+inline void scalar_mult_var_base_compress_freeze(unsigned char op[34], unsigned char base_rand[68], unsigned char n[33]){
 	int bit, i, j, k;
 	gfe4x np,npt;
 	gfe work[4],re[4],x,z,xinvz;
@@ -117,7 +118,7 @@ inline void scalar_mult_var_base_compress_freeze(unsigned char op[34], unsigned 
 	gfe54 x54,z54,temp;
 		
 	convert_ctoi(&work[0],base_rand);
-	convert_ctoi(&work[1],base_rand+32);
+	convert_ctoi(&work[1],base_rand+34);
 	set_base_point(pabxz,work);
 	gfe4_f_gfe_part1(&np, work);
 	gfe4x_hadamard(&np, &np);
@@ -129,17 +130,17 @@ inline void scalar_mult_var_base_compress_freeze(unsigned char op[34], unsigned 
 	gfe4_f_gfe_part2(&np, work);
 
 	bit = 0;
-	i = 32;
-	j = 6;	
+	i =32;
+	j=7;
 	while(bit == 0){
 		bit = (n[i]>>j) & 1;
 		j--;
-		if(j==-1){i--;j=7;}
+		if(j==-1) {i--; j=7;}
 	}
-  	
+	//k = 1;
 	
   	for(;i>=0;i--){
-    		for(;j>=0;j--){
+       		for(;j>=0;j--){
 			bit = (n[i]>>j) & 1;
 			gfe4x_hadamardUnreduced(&np, &np);
 			gfe4x_permute(&npt,&np,bit);
@@ -153,8 +154,6 @@ inline void scalar_mult_var_base_compress_freeze(unsigned char op[34], unsigned 
 	}
 	VECREDUCEPARTB2663((&np)->v[0],(&np)->v[1],(&np)->v[2],(&np)->v[3],(&np)->v[4],(&np)->v[5],(&np)->v[6],(&np)->v[7],(&np)->v[8],(&np)->v[9]);
 	gfe4_t_gfe(&np, re);
-//	x = re[0];	pack54(&x,&x54);
-//	z = re[1];	pack54(&z,&z54);
 	pack54(&re[0],&x54);
 	pack54(&re[1],&z54);
 	invert(&temp,&z54);
@@ -163,10 +162,10 @@ inline void scalar_mult_var_base_compress_freeze(unsigned char op[34], unsigned 
 	makeUnique(&temp,&temp);
 	convert_i54toc(&temp,op);
 
-	return;
+	return ;
 }
 
-inline void scalar_mult_var_base_decompress(gfe54 *x54, gfe54 *z54, unsigned char base_rand[64], unsigned char n[33]){
+inline void scalar_mult_var_base_decompress(gfe54 *x54, gfe54 *z54, unsigned char base_rand[68], unsigned char n[33]){
 	int bit, i, j, k;
 	gfe4x np,npt;
 	gfe work[4],re[4],x,z,xinvz;
@@ -174,7 +173,7 @@ inline void scalar_mult_var_base_decompress(gfe54 *x54, gfe54 *z54, unsigned cha
 	gfe54 temp;
 		
 	convert_ctoi(&work[0],base_rand);
-	convert_ctoi(&work[1],base_rand+32);
+	convert_ctoi(&work[1],base_rand+34);
 	set_base_point(pabxz,work);
 	gfe4_f_gfe_part1(&np, work);
 	gfe4x_hadamard(&np, &np);
@@ -186,17 +185,17 @@ inline void scalar_mult_var_base_decompress(gfe54 *x54, gfe54 *z54, unsigned cha
 	gfe4_f_gfe_part2(&np, work);
 
 	bit = 0;
-	i = 32;
-	j = 6;	
+	i =32;
+	j=7;
 	while(bit == 0){
 		bit = (n[i]>>j) & 1;
 		j--;
-		if(j==-1){i--;j=7;}
+		if(j==-1) {i--; j=7;}
 	}
-  	
+	//k = 1;
 	
   	for(;i>=0;i--){
-    		for(;j>=0;j--){
+       		for(;j>=0;j--){
 			bit = (n[i]>>j) & 1;
 			gfe4x_hadamardUnreduced(&np, &np);
 			gfe4x_permute(&npt,&np,bit);
@@ -210,12 +209,10 @@ inline void scalar_mult_var_base_decompress(gfe54 *x54, gfe54 *z54, unsigned cha
 	}
 	VECREDUCEPARTB2663((&np)->v[0],(&np)->v[1],(&np)->v[2],(&np)->v[3],(&np)->v[4],(&np)->v[5],(&np)->v[6],(&np)->v[7],(&np)->v[8],(&np)->v[9]);
 	gfe4_t_gfe(&np, re);
-//	x = re[0];	pack54(&x,&x54);
-//	z = re[1];	pack54(&z,&z54);
 	pack54(&re[0],x54);
 	pack54(&re[1],z54);
 
-	return;
+	return ;
 }
 
 
