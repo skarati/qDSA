@@ -1,13 +1,7 @@
-//#include "shake256/keccak-tiny-unrolled.c"
-
 #include "basics.h"
 #include "kummer.h"
 #include "scalar.c"
 #include "hash.c"
-//#include "measurement.h"
-//#include "gfe51.h"
-
-//typedef unsigned char u8;
 
 const u8 alpha0=82;
 const u8 alpha1=77;
@@ -23,6 +17,9 @@ void sub_gfe51(gfe51 *r, gfe51 *x, gfe51 *z);
 void mul_gfe51_c(gfe51 *r, gfe51 *x, const u8 c);
 void mul_gfe51_2(gfe51 *r, gfe51 *x);
 void convert_KL2LE(gfe51 *x, gfe51 *z);
+void convert_KL2LET2(gfe51 *x, gfe51 *z);
+void clampedScalar8(u8 r[32]);
+void clampedScalar16(u16 r[32]);
 
 void setup(gfe4x* basenp){
 	gfe work[4];
@@ -40,6 +37,97 @@ void setup(gfe4x* basenp){
 
 }
 
+void clampedScalar8(u8 r[32]){
+	int i,j;
+	u64 r64[4];
+	u64 r2[4], r3[4], carry;
+	__int128_t r12[4];
+
+
+	r[31] = r[31] & 7;
+	r[31] = r[31] | 4;
+
+	for(i=0;i<4;i++){
+		r64[i] = r[i*8];
+		for(j=1;j<8;j++){
+			r64[i] = r64[i] | ((u64)r[i*8+j]<<(j*8));
+		}
+	}
+
+	r2[0] = r64[0]<<2; 
+	r2[1] = (r64[0]>>62) | (r64[1]<<2);
+	r2[2] = (r64[1]>>62) | (r64[2]<<2);
+	r2[3] = (r64[2]>>62) | (r64[3]<<2);
+
+	r3[0] = r64[0]<<3;
+	r3[1] = (r64[0]>>61) | (r64[1]<<3);
+	r3[2] = (r64[1]>>61) | (r64[2]<<3);
+	r3[3] = (r64[2]>>61) | (r64[3]<<3);
+	
+	r12[0] = (__int128_t)r2[0] + r3[0];
+	r12[1] = (__int128_t)r2[1] + r3[1];
+	r12[2] = (__int128_t)r2[2] + r3[2];
+	r12[3] = (__int128_t)r2[3] + r3[3];
+	
+	carry = r12[0] >> 64; r12[1] += carry; r12[0] = r12[0] & 0xffffffffffffffff;
+	carry = r12[1] >> 64; r12[2] += carry; r12[1] = r12[1] & 0xffffffffffffffff;
+	carry = r12[2] >> 64; r12[3] += carry; r12[2] = r12[2] & 0xffffffffffffffff;
+	
+	for(i=0;i<4;i++){
+		for(j=0;j<8;j++){
+			r[8*i+j] = (u8)(r12[i] & 0xff);
+			r12[i] = r12[i] >> 8;
+		}
+	}
+	
+}
+
+void clampedScalar16(u16 r[32]){
+	int i,j;
+	u64 r64[4];
+	u64 r2[4], r3[4], carry;
+	__int128_t r12[4];
+
+
+	r[31] = r[31] & 7;
+	r[31] = r[31] | 4;
+
+	for(i=0;i<4;i++){
+		r64[i] = r[i*8];
+		for(j=1;j<8;j++){
+			r64[i] = r64[i] | ((u64)r[i*8+j]<<(j*8));
+		}
+	}
+
+	r2[0] = r64[0]<<2;
+	r2[1] = (r64[0]>>62) | (r64[1]<<2);
+	r2[2] = (r64[1]>>62) | (r64[2]<<2);
+	r2[3] = (r64[2]>>62) | (r64[3]<<2);
+
+	r3[0] = r64[0]<<3;
+	r3[1] = (r64[0]>>61) | (r64[1]<<3);
+	r3[2] = (r64[1]>>61) | (r64[2]<<3);
+	r3[3] = (r64[2]>>61) | (r64[3]<<3);
+	
+	r12[0] = (__int128_t)r2[0] + r3[0];
+	r12[1] = (__int128_t)r2[1] + r3[1];
+	r12[2] = (__int128_t)r2[2] + r3[2];
+	r12[3] = (__int128_t)r2[3] + r3[3];
+	
+	carry = r12[0] >> 64; r12[1] += carry; r12[0] = r12[0] & 0xffffffffffffffff;
+	carry = r12[1] >> 64; r12[2] += carry; r12[1] = r12[1] & 0xffffffffffffffff;
+	carry = r12[2] >> 64; r12[3] += carry; r12[2] = r12[2] & 0xffffffffffffffff;
+	
+	for(i=0;i<4;i++){
+		for(j=0;j<8;j++){
+			r[8*i+j] = (u8)(r12[i] & 0xff);
+			r12[i] = r12[i] >> 8;
+		}
+	}
+	
+}
+
+
 void keyGen(u8* d1, u8* d2, u8* pk){
 	int i;
 	u8 d[32];
@@ -52,8 +140,7 @@ void keyGen(u8* d1, u8* d2, u8* pk){
 	hash(dd, d, 32);
 	memcpy(d1, dd, 32);
 	memcpy(d2, dd+32, 32);
-	d1[31] = d1[31] & 10;
-	d1[30] = d1[30] & 127;
+	clampedScalar8(d1);
 
 	scalar_mult_fixed_base_compress_freeze(pk, basenp, d1);
 
@@ -75,22 +162,25 @@ void sign(u8* R, u8* s, u8* d1, u8* d2, u8* pk, u8 msg[32]){
 	memcpy(haship+32, msg, 32);
 	hash(hashop, haship, 64);
 	for(i=0;i<64;i++) temp[i] = hashop[i];
+
 	barrett_reduce(r16, temp);
+	clampedScalar16(r16);
+
 	for(i=0;i<32;i++) r8[i] = (u8)r16[i];
 
 	scalar_mult_fixed_base_compress_freeze(R, basenp, r8);
 
-	
 	memcpy(haship2, R, 32);
 	memcpy(haship2+32, pk, 32);
 	memcpy(haship2+64, msg, 32);
 	hash(hashop, haship2, 96);	
 	for(i=0;i<64;i++) temp[i] = hashop[i];
 	barrett_reduce(h16, temp);
-	group_scalar_set_pos(h16);
+	clampedScalar16(h16);
 
 	for(i=0;i<32;i++) s16[i] = d1[i];
 	group_scalar_mul(s16, h16, s16);
+
     	group_scalar_sub(s16, r16, s16);
 	for(i=0;i<32;i++) s[i] = (u8)s16[i];
 	
@@ -118,8 +208,8 @@ int  verify(u8* R, u8* s, u8* pk, u8 msg[32]){
 	hash(hashop, haship2, 96);	
 	for(i=0;i<64;i++) temp[i] = hashop[i];
 	barrett_reduce(h16, temp);
-	group_scalar_set_pos(h16);
 	for(i=0;i<32;i++) h8[i] = (u8)h16[i];
+	clampedScalar8(h8);
 	
 	for(i=0;i<32;i++) base_rand[i]=pk[i];
 	base_rand[32] = 1;
@@ -132,7 +222,9 @@ int  verify(u8* R, u8* s, u8* pk, u8 msg[32]){
 
 	convert_KL2LE(&xp51, &zp51);
 	convert_KL2LE(&xq51, &zq51);
-	convert_KL2LE(&xr51, &zr51);
+	if((s[0]&1)==0)
+		convert_KL2LET2(&xr51, &zr51);
+	else convert_KL2LE(&xr51, &zr51);
 		
 	gfe51 bxx,bzz,bxz;
 	gfe51 t1,t2,t3,t4,t5,t6,t7,t8;
@@ -231,10 +323,18 @@ void sub_gfe51(gfe51 *r, gfe51 *x, gfe51 *z){
 void convert_KL2LE(gfe51 *x, gfe51 *z){
 	gfe51 t;
 	
+	mul_gfe51_c(x,x,alpha0);
+	mul_gfe51_c(z,z,alpha1);
+	sub_gfe51(z, x, z);
+}
+
+
+void convert_KL2LET2(gfe51 *x, gfe51 *z){
+	gfe51 t;
+	
 	mul_gfe51_c(&t,x,alpha1);
 	mul_gfe51_c(x,z,alpha0);
 	sub_gfe51(z, x, &t);
 }
-
 
 
