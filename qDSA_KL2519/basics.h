@@ -39,6 +39,7 @@ typedef struct{
 	u64 v[5];
 }gfe51;
 
+
 typedef struct {
   	vec v[9];
 }gfe4x;
@@ -375,7 +376,6 @@ void convert_ctoi51(gfe51 *r51, unsigned char r[32]){
 	r51->v[4] |= ((u64)(r[31]&0x07) << 44);	/*47*/
 
 }
-
 
 void gfe4_f_gfe(gfe4x *r64, gfe *m){
   	int i;
