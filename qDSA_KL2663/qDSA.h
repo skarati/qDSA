@@ -30,8 +30,8 @@ void clampedScalar8(u8 r[33]){
 	__int128_t r12[5];
 
 
-	r[32] = r[32] & 0xf;
-	r[32] = r[32] | 0x8;
+	r[32] = r[32] & 0x13;
+	r[32] = r[32] | 0x12;
 
 	for(i=0;i<4;i++){
 		r64[i] = r[i*8];
@@ -81,8 +81,8 @@ void clampedScalar16(u16 r[33]){
 	__int128_t r12[5];
 
 
-	r[32] = r[32] & 0xf;
-	r[32] = r[32] | 0x8;
+	r[32] = r[32] & 0x13;
+	r[32] = r[32] | 0x12;
 
 	for(i=0;i<4;i++){
 		r64[i] = r[i*8];
@@ -154,7 +154,6 @@ void keyGen(u8* d1, u8* d2, u8* pk){
 	hash(dd, d, 32);
 	memcpy(d1, dd, 33);
 	memcpy(d2, dd+33, 31);
-	dd[31] = rand()%256;
 	clampedScalar8(d1);
 
 	scalar_mult_fixed_base_compress_freeze(pk, basenp, d1);
@@ -173,9 +172,9 @@ void sign(u8* R, u8* s, u8* d1, u8* d2, u8* pk, u8 msg[32]){
 	gfe work[4];
 	u32 temp[66];
 		
-	memcpy(haship, d2, 32);
-	memcpy(haship+32, msg, 32);
-	hash(hashop, haship, 64);
+	memcpy(haship, d2, 31);
+	memcpy(haship+31, msg, 32);
+	hash(hashop, haship, 63);
 	for(i=0;i<64;i++) temp[i] = hashop[i];
 	temp[64] = 0; temp[65] = 0;
 
