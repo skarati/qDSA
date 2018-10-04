@@ -12,7 +12,7 @@ int main(){
 
 	setup(&basenp);
 	
-	//srand(time(NULL));
+	srand(time(NULL));
 	//for(int j=0;j<1000;j++){
 	MEASURE({
 		keyGen(d1, d2, pk);
@@ -31,7 +31,7 @@ int main(){
 
 
 	MEASURE({
-		v = verify(R, s, pk, msg);
+		v += verify(R, s, pk, msg);
 		
 	});
 		//printf("\nverify = %d\n",v);

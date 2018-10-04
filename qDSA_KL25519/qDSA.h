@@ -45,7 +45,7 @@ void clampedScalar8(u8 r[32]){
 
 
 	r[31] = r[31] & 0x9;
-	r[31] = r[31] | 0x9;
+	r[31] = r[31] | 0x8;
 
 	for(i=0;i<4;i++){
 		r64[i] = r[i*8];
@@ -90,7 +90,7 @@ void clampedScalar16(u16 r[32]){
 
 
 	r[31] = r[31] & 0x9;
-	r[31] = r[31] | 0x9;
+	r[31] = r[31] | 0x8;
 
 	for(i=0;i<4;i++){
 		r64[i] = r[i*8];
