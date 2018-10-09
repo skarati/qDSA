@@ -30,7 +30,7 @@ inline void scalar_mult_fixed_base_compress_freeze(unsigned char op[34], gfe4x b
 	np = base;
 	gfe4_t_gfe(&np, re);
 	bit = 0;
-	j = 6;
+	j = 7;
 	i=31;
 	while(bit == 0){
 		bit = (n[i]>>j) & 1;
@@ -79,7 +79,7 @@ inline void scalar_mult_fixed_base_decompress(gfe51 *x51, gfe51 *z51, gfe4x base
 	np = base;
 	gfe4_t_gfe(&np, re);
 	bit = 0;
-	j = 6;
+	j = 7;
 	i =31;
 	while(bit == 0){
 		bit = (n[i]>>j) & 1;
@@ -134,7 +134,7 @@ inline void scalar_mult_var_base_compress_freeze(unsigned char op[32], unsigned 
 	gfe4_f_gfe_part2(&np, work);
 
 	bit = 0;
-	j = 6;	
+	j = 7;	
 	i=31;
 	while(bit == 0){
 		bit = (n[i]>>j) & 1;
@@ -191,7 +191,7 @@ inline void scalar_mult_var_base_decompress(gfe51 *x51, gfe51 *z51, unsigned cha
 	gfe4_f_gfe_part2(&np, work);
 
 	bit = 0;
-	j = 6;	
+	j = 7;	
 	i=31;
 	while(bit == 0){
 		bit = (n[i]>>j) & 1;
