@@ -78,7 +78,7 @@ inline void makeUnique(gfe54 *op, gfe54 *inp) {
         gfe t[2];
         u8 i;
 
-        for(i=0;i<5;i++) t[0].v[i] = inp->v[i];
+        /*for(i=0;i<5;i++) t[0].v[i] = inp->v[i];
         for(i=1;i<5;i++) t[1].v[i] = 0; t[1].v[0] = inp->v[0] - ((1ULL<<54)-3);
         if (
                 ((inp->v[4]&mask50)==mask50) &&
@@ -90,7 +90,18 @@ inline void makeUnique(gfe54 *op, gfe54 *inp) {
                 for(i=0;i<5;i++) op->v[i] = t[1].v[i];
         } else {
                 for(i=0;i<5;i++) op->v[i] = t[0].v[i];
-        }
+        }*/
+	u64 u,v;
+
+        u = (inp->v[0] >= ((1ULL<<54)-3));
+	for(i=1;i<4;i++) u=u && (inp->v[i] == mask54);
+	u=u && (inp->v[4] == mask50);
+
+	v=-u;
+	u = (v ^ 0xffffffffffffffff);
+
+	op->v[0] = (inp->v[0] & u) | ((inp->v[0] - ((1ULL<<54)-3))& v);
+	for(i=1;i<5;i++) op->v[i] = (inp->v[i] & u);
 }
 
 
