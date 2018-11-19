@@ -73,8 +73,9 @@ const u64 mask47 = 0x7fffffffffff;
 inline void makeUnique(gfe51 *op, gfe51 *inp) {
         gfe51 t[2];
         u8 i;
+	u64 u,v;
 
-        for(i=0;i<5;i++) t[0].v[i] = inp->v[i];
+       /* for(i=0;i<5;i++) t[0].v[i] = inp->v[i];
         for(i=1;i<5;i++) t[1].v[i] = 0; t[1].v[0] = inp->v[0] - ((1ULL<<51)-9);
         if (
                 ((inp->v[4]&mask47)==mask47) &&
@@ -86,7 +87,19 @@ inline void makeUnique(gfe51 *op, gfe51 *inp) {
                 for(i=0;i<5;i++) op->v[i] = t[1].v[i];
         } else {
                 for(i=0;i<5;i++) op->v[i] = t[0].v[i];
-        }
+        }*/
+
+	u = (inp->v[0] >= ((1ULL<<51)-9));
+	for(i=1;i<4;i++) u=u && (inp->v[i] == mask51);
+	u=u && (inp->v[4] == mask47);
+
+	v=-u;
+	u = (v ^ 0xffffffffffffffff);
+
+	op->v[0] = (inp->v[0] & u) | ((inp->v[0] - ((1ULL<<51)-9))& v);
+	for(i=1;i<5;i++) op->v[i] = (inp->v[i] & u);
+
+
 }
 
 void convert_ctoi(gfe *r64, const unsigned char r[32]){
