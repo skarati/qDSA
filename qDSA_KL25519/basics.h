@@ -83,7 +83,7 @@ inline void makeUnique(gfe51 *op, gfe51 *inp) {
 	u64 u,v;
 
         u = (inp->v[0] >= ((1ULL<<51)-19));
-	for(i=1;i<5;i++) u=u && (inp->v[i] == mask51);
+	for(i=1;i<5;i++) u=u & (inp->v[i] == mask51);
 	//u=u & (inp->v[4] == mask47);
 
 	v=-u;
