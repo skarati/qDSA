@@ -90,8 +90,8 @@ inline void makeUnique(gfe51 *op, gfe51 *inp) {
         }*/
 
 	u = (inp->v[0] >= ((1ULL<<51)-9));
-	for(i=1;i<4;i++) u=u && (inp->v[i] == mask51);
-	u=u && (inp->v[4] == mask47);
+	for(i=1;i<4;i++) u=u & (inp->v[i] == mask51);
+	u=u & (inp->v[4] == mask47);
 
 	v=-u;
 	u = (v ^ 0xffffffffffffffff);
