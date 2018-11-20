@@ -94,8 +94,8 @@ inline void makeUnique(gfe54 *op, gfe54 *inp) {
 	u64 u,v;
 
         u = (inp->v[0] >= ((1ULL<<54)-3));
-	for(i=1;i<4;i++) u=u && (inp->v[i] == mask54);
-	u=u && (inp->v[4] == mask50);
+	for(i=1;i<4;i++) u=u & (inp->v[i] == mask54);
+	u=u & (inp->v[4] == mask50);
 
 	v=-u;
 	u = (v ^ 0xffffffffffffffff);
