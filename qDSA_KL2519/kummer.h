@@ -321,15 +321,15 @@ inline void sq_gfe4(gfe4x *r64, gfe4x *m){
 }
 
 
-const vec hadamardoffset[9] =   {{0, 0x9FFFFFA61,0, 0x9FFFFFA61},
-					{0, 0x9FFFFFF61,0, 0x9FFFFFF61},
-					{0, 0x9FFFFFF61,0, 0x9FFFFFF61},
-					{0, 0x9FFFFFF61,0, 0x9FFFFFF61},
-					{0, 0x9FFFFFF61,0, 0x9FFFFFF61},
-					{0, 0x9FFFFFF61,0, 0x9FFFFFF61},
-					{0, 0x9FFFFFF61,0, 0x9FFFFFF61},
-					{0, 0x9FFFFFF61,0, 0x9FFFFFF61},
-					{0, 0x4FFFFFF61,0, 0x4FFFFFF61}};
+const vec hadamardoffset[9] =   {{0, 0xFFFFFF7001,0, 0xFFFFFF7001},
+					{0, 0xFFFFFFF001,0, 0xFFFFFFF001},
+					{0, 0xFFFFFFF001,0, 0xFFFFFFF001},
+					{0, 0xFFFFFFF001,0, 0xFFFFFFF001},
+					{0, 0xFFFFFFF001,0, 0xFFFFFFF001},
+					{0, 0xFFFFFFF001,0, 0xFFFFFFF001},
+					{0, 0xFFFFFFF001,0, 0xFFFFFFF001},
+					{0, 0xFFFFFFF001,0, 0xFFFFFFF001},
+					{0, 0x7FFFFFF001,0, 0x7FFFFFF001}};
 inline void gfe4x_hadamard(gfe4x *op, gfe4x *ip){
   	int i;
 	vec t[9];
