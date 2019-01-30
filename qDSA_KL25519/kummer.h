@@ -326,16 +326,16 @@ const vec hadamardoffset[10] =   {{0, 0x9FFFFFA61,0, 0x9FFFFFA61},
 
 
 */
-const vec hadamardoffset[10] =   {{0, 0xFFFFFB401,0, 0xFFFFFB401},
-					{0, 0xFFFFFFC01,0, 0xFFFFFFC01},
-					{0, 0xFFFFFFC01,0, 0xFFFFFFC01},
-					{0, 0xFFFFFFC01,0, 0xFFFFFFC01},
-					{0, 0xFFFFFFC01,0, 0xFFFFFFC01},
-					{0, 0xFFFFFFC01,0, 0xFFFFFFC01},
-					{0, 0xFFFFFFC01,0, 0xFFFFFFC01},
-					{0, 0xFFFFFFC01,0, 0xFFFFFFC01},
-					{0, 0xFFFFFFC01,0, 0xFFFFFFC01},
-					{0, 0x7FFFFC01,0, 0x7FFFFC01}};
+const vec hadamardoffset[10] =   {{0, 0x3FFFFED01,0, 0x3FFFFED01},
+					{0, 0x3FFFFFF01,0, 0x3FFFFFF01},
+					{0, 0x3FFFFFF01,0, 0x3FFFFFF01},
+					{0, 0x3FFFFFF01,0, 0x3FFFFFF01},
+					{0, 0x3FFFFFF01,0, 0x3FFFFFF01},
+					{0, 0x3FFFFFF01,0, 0x3FFFFFF01},
+					{0, 0x3FFFFFF01,0, 0x3FFFFFF01},
+					{0, 0x3FFFFFF01,0, 0x3FFFFFF01},
+					{0, 0x3FFFFFF01,0, 0x3FFFFFF01},
+					{0, 0x1FFFFF01,0, 0x1FFFFF01}};
 
 
 inline void gfe4x_hadamard(gfe4x *op, gfe4x *ip){
